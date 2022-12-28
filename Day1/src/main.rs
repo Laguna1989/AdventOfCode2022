@@ -1,7 +1,6 @@
 use std::fs;
 
 fn parse_and_unwrap(calory_str: &str) -> u32 {
-    println!("{calory_str}");
     calory_str.parse::<u32>().unwrap()
 }
 
@@ -12,7 +11,7 @@ fn main() {
     let contents = fs::read_to_string(file_path)
         .expect("Should have been able to read the file");
 
-    let mut vec_max_calories_per_elf : Vec<u32> = contents.split("\n\n")
+    let mut vec_max_calories_per_elf: Vec<u32> = contents.split("\n\n")
         .map(|calories_per_elf| calories_per_elf
             .trim().split("\n")
             .map(|calory_str| parse_and_unwrap(calory_str))
