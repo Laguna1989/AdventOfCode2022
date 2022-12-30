@@ -1,6 +1,14 @@
-fn transform_opponent(icon: &str) -> i8
-{
-    return match icon {
+fn get_loose_icon_for(opponent_icon: &str) -> i8 {
+    return match opponent_icon {
+        "A" => 3,
+        "B" => 1,
+        "C" => 2,
+        _ => 0
+    };
+}
+
+fn get_draw_icon_for(opponent_icon: &str) -> i8 {
+    return match opponent_icon {
         "A" => 1,
         "B" => 2,
         "C" => 3,
@@ -8,49 +16,42 @@ fn transform_opponent(icon: &str) -> i8
     };
 }
 
-fn transform_counter(icon: &str) -> i8
-{
-    return match icon {
-        "X" => 1,
-        "Y" => 2,
-        "Z" => 3,
+fn get_win_icon_for(opponent_icon: &str) -> i8 {
+    return match opponent_icon {
+        "A" => 2,
+        "B" => 3,
+        "C" => 1,
         _ => 0
     };
 }
 
-fn get_win_score(opponent: &str, counter: &str) -> i32
-{
-    if transform_opponent(opponent) == transform_counter(counter)
+fn get_icon_score(opponent: &str, outcome: &str) -> i32 {
+    let my_icon = match outcome
     {
-        return 3;
-    }
-    let expected_counter = match opponent {
-        "A" => "Y",
-        "B" => "Z",
-        "C" => "X",
-        _ => ""
+        "X" => get_loose_icon_for(opponent),
+        "Y" => get_draw_icon_for(opponent),
+        "Z" => get_win_icon_for(opponent),
+        _ => 0
     };
-    if expected_counter.eq(counter)
-    {
-        return 6;
-    }
-    return 0;
+    return my_icon as i32;
 }
 
-fn icon_score(icon: &str) -> i32
+
+fn get_outcome_score(icon: &str) -> i32
 {
     return match icon {
-        "X" => 1,
-        "Y" => 2,
-        "Z" => 3,
+        "X" => 0,
+        "Y" => 3,
+        "Z" => 6,
         _ => 0
     };
 }
+
 
 fn get_score_from_line(line: &str) -> i32
 {
     let split: Vec<&str> = line.split(" ").collect();
-    return get_win_score(split[0], split[1]) + icon_score(split[1]);
+    return get_icon_score(split[0], split[1]) + get_outcome_score(split[1]);
 }
 
 
@@ -60,25 +61,4 @@ fn main() {
     let sum_score: i32 = contents.lines().map(|line| get_score_from_line(line)).sum();
 
     println!("{}", sum_score);
-}
-
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_check_win() {
-        assert_eq!(get_win_score("A", "Y"), true);
-        assert_eq!(get_win_score("A", "X"), false);
-        assert_eq!(get_win_score("A", "Z"), false);
-
-        assert_eq!(get_win_score("B", "Y"), false);
-        assert_eq!(get_win_score("B", "X"), false);
-        assert_eq!(get_win_score("B", "Z"), true);
-
-        assert_eq!(get_win_score("C", "Y"), false);
-        assert_eq!(get_win_score("C", "X"), true);
-        assert_eq!(get_win_score("C", "Z"), false);
-    }
 }
